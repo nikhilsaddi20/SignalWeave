@@ -1,37 +1,30 @@
 from datetime import datetime, timedelta
-from typing import Dict, List
 
 FAILED_LOGIN_THRESHOLD = 5
 WINDOW_MINUTES = 10
 
-failed_logins: Dict[str, List[datetime]] = {}
-
+failed_attempts = {}
 
 def correlate_auth_event(event: dict):
-    if event.get("event_type") != "failed_login":
+    if event["event_type"] != "failed_login":
         return []
 
     ip = event.get("ip")
-    if not ip:
-        return []
-
     now = datetime.utcnow()
 
-    failed_logins.setdefault(ip, [])
-    failed_logins[ip].append(now)
+    failed_attempts.setdefault(ip, [])
+    failed_attempts[ip].append(now)
 
-    window_start = now - timedelta(minutes=WINDOW_MINUTES)
-    failed_logins[ip] = [
-        t for t in failed_logins[ip] if t >= window_start
-    ]
+    window = now - timedelta(minutes=WINDOW_MINUTES)
+    failed_attempts[ip] = [t for t in failed_attempts[ip] if t > window]
 
-    if len(failed_logins[ip]) >= FAILED_LOGIN_THRESHOLD:
+    if len(failed_attempts[ip]) >= FAILED_LOGIN_THRESHOLD:
         return [{
             "type": "brute_force",
             "confidence": "high",
             "entity": f"ip:{ip}",
             "window": "10m",
-            "count": len(failed_logins[ip])
+            "count": len(failed_attempts[ip])
         }]
 
     return []
