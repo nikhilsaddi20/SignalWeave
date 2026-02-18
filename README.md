@@ -148,42 +148,28 @@ Successful Response Example
   },
   "incident": null
 }
+
 Detection & Correlation Logic
-
 Events are correlated using a sliding time window
-
 Failed authentication attempts are tracked per IP address
-
 Threshold-based logic determines suspicious behavior
-
 Signals represent patterns, not confirmed attacks
-
 Risk scoring determines escalation severity
-
 This logic aligns with real SOC detection engineering practices.
 
 Use Cases
 
 Brute-force attack detection
-
 SOC analyst training and education
-
 Detection engineering research
-
 Security log analysis demonstrations
-
 Academic and competition presentations
 
 Technologies Used
 
 Python
-
 FastAPI
-
 Uvicorn
-
 REST APIs
-
 Detection engineering concepts
-
 Time-based correlation algorithms
